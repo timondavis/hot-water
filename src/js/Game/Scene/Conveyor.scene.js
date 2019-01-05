@@ -1,6 +1,6 @@
 let SamSprite = require('../Sprite/Sam.sprite');
 let StaticSprite = require('../Sprite/Static.sprite');
-let ItemSprite = require('../Sprite/Item/Item.sprite');
+let ItemSprite = require('../Sprite/Item.sprite');
 let HyperassemblyChamberSprite = require('../Sprite/HyperassemblyChamber.sprite');
 let TextureNamesEnum = require('../Sprite/TextureNames.enum');
 
@@ -33,7 +33,6 @@ class ConveyorScene extends Phaser.Scene {
         this.currentItem.visible = false;
         this.currentItem.setScale(2);
         this.currentItem.itemType = null;
-
 
         this.createInputs();
 
@@ -68,7 +67,6 @@ class ConveyorScene extends Phaser.Scene {
         this.insertRight = this.input.keyboard.addKey('f');
     }
 
-
     handleInputs() {
 
         let item = this.items.getFirst(true);
@@ -81,7 +79,7 @@ class ConveyorScene extends Phaser.Scene {
             (this.insertLeft.isDown || this.insertRight.isDown ) &&
             !this.processingAction
         ) {
-            this.handleInsert();
+            this.handleHyperchamberInteraction();
         }
 
     }
@@ -149,6 +147,7 @@ class ConveyorScene extends Phaser.Scene {
 
         let item = this.items.getFirst(true);
         this.currentItem.setFrame(item.frame.name);
+        this.currentItem.itemType = item.itemType;
 
         this.sam.anims.play(this.sam.animationKeys.GRAB.DOWN);
 
@@ -156,7 +155,7 @@ class ConveyorScene extends Phaser.Scene {
 
             targets: this.sam,
             duration: 250,
-            x: item.x - 30,
+            x: item.x - 30, y: this.sam.homeRow,
             onComplete: () => {
                 setTimeout(() => {
                     this.sam.anims.play(this.sam.animationKeys.STAND.DOWN);
@@ -169,8 +168,7 @@ class ConveyorScene extends Phaser.Scene {
         });
     }
 
-    handleInsert() {
-        this.sam.anims.play(this.sam.animationKeys.WALK.UP);
+    handleHyperchamberInteraction() {
 
         let targetChamber = null;
 
@@ -180,13 +178,33 @@ class ConveyorScene extends Phaser.Scene {
             targetChamber = this.hyperChamberTwo;
         }
 
+        if (targetChamber.isProductComplete() && !this.currentItem.visible) {
+            this.sam.anims.play(this.sam.animationKeys.WALK.UP);
+            this.handleGetPackage(targetChamber);
+        }
+        else if (targetChamber.mayItemBeInserted(this.currentItem)) {
+            this.handleInsert(targetChamber, this.currentItem);
+        }
+    }
+
+    handleGetPackage(targetChamber) {
+
+        this.currentItem.setFrame('')
+    }
+
+
+    handleInsert(targetChamber, candidateItem) {
+
+        if (this.insertTween) { return; }
+
         this.insertTween = this.tweens.add({
            targets: this.sam,
            duration: 400,
            x: targetChamber.x, y: targetChamber.y,
            onComplete: () => {
-               targetChamber.insert(this.currentItem);
+               targetChamber.insert(candidateItem);
                this.currentItem.visible = false;
+               this.insertTween = null;
            }
         });
     }

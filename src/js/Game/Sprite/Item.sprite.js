@@ -1,4 +1,4 @@
-let TextureNameEnums = require('../TextureNames.enum');
+let TextureNameEnums = require('./TextureNames.enum');
 
 // "STATIC" constants
 const itemTypes = {

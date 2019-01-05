@@ -9,6 +9,8 @@ class SamSprite extends Phaser.GameObjects.Sprite {
         this.scene = config.scene;
         this.scene.add.existing(this);
         this.setAnimations();
+
+        this.homeRow = config.x;
     }
 
     setAnimations() {

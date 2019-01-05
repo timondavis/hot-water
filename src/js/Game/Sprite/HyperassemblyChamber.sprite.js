@@ -1,5 +1,5 @@
 let Phaser = require('phaser');
-let ItemSprite = require('./Item/Item.sprite');
+let ItemSprite = require('./Item.sprite');
 let TextureNamesEnum = require('./TextureNames.enum');
 
 let animationsRegistered = false;
@@ -19,8 +19,15 @@ class HyperassemblyChamberSprite extends Phaser.GameObjects.Sprite {
         this.minimumItemsRequired = 2;
         this.maximumItemsRequired = 2;
 
-        this.items = [];
-        this.requiredItemsTemplate = [];
+        this.requiredItems = [];
+        this.requiredItemsBg = this.scene.add.graphics();
+        let requiredItemsBgMargin = 10;
+        this.requiredItemsBg.fillStyle(0xFFFFFF, .5);
+        this.requiredItemsBg.fillRect(
+            this.x - 35 - requiredItemsBgMargin,
+            this.y - 90 - requiredItemsBgMargin,
+            90, 40
+        );
 
         this.resetItemsTemplate();
     }
@@ -32,7 +39,9 @@ class HyperassemblyChamberSprite extends Phaser.GameObjects.Sprite {
      */
     insert(suggestedItem) {
 
-        let matchingItems = this.requiredItemsTemplate.filter(
+        if (!this.mayItemBeInserted(suggestedItem)) { return; }
+
+        let matchingItems = this.requiredItems.filter(
             requiredItem => requiredItem.itemType === suggestedItem.itemType && requiredItem.fulfilled === false
         );
 
@@ -45,10 +54,48 @@ class HyperassemblyChamberSprite extends Phaser.GameObjects.Sprite {
         }
     }
 
+    /**
+     * May the suggested item be inserted into the Hyperassembly Chamber?
+     *
+     * @param suggestedItem ItemSprite
+     * @returns {boolean}
+     */
+    mayItemBeInserted(suggestedItem) {
+
+        let matchingItems = this.requiredItems.filter(
+            requiredItem => requiredItem.itemType === suggestedItem.itemType && requiredItem.fulfilled === false
+        );
+
+        if (Array.isArray(matchingItems) && matchingItems.length) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Has the Hyperassembly Chamber produced its product?
+     *
+     * @returns {boolean}
+     */
+    isProductComplete() {
+
+        let isProductReady = true;
+
+        this.requiredItems.forEach((item) => {
+            if (!item.fulfilled) { isProductReady = false; }
+        });
+
+        return isProductReady;
+    }
+
+    /**
+     * Clear out the required items template for the hyperassembly chamber and set with new values.
+     */
     resetItemsTemplate() {
 
         this.resetItems();
-        this.requiredItemsTemplate = [];
+        this.requiredItems = [];
         const numberOfItemsRequired = Phaser.Math.RND.between(this.minimumItemsRequired, this.maximumItemsRequired);
 
         let newItem = null;
@@ -60,16 +107,21 @@ class HyperassemblyChamberSprite extends Phaser.GameObjects.Sprite {
                 type: ItemSprite.getRandomItemType(),
             });
             newItem.setScale(.8);
-            newItem.setAlpha(.7);
+            newItem.setAlpha(.5);
             newItem.fulfilled = false;
 
-            this.requiredItemsTemplate.push(newItem);
+            this.requiredItems.push(newItem);
         }
     }
 
+    /**
+     * Set every item in the required items list to unfulfilled.
+     */
     resetItems() {
 
-        this.items = [];
+        this.requiredItems.forEach((item) => {
+            item.fulfilled = false;
+        })
     }
 
     setAnimations() {
