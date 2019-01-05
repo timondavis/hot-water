@@ -1,4 +1,5 @@
 let Phaser = require('phaser');
+let ItemSprite = require('./Item/Item.sprite');
 let TextureNamesEnum = require('./TextureNames.enum');
 
 let animationsRegistered = false;
@@ -13,10 +14,62 @@ class HyperassemblyChamberSprite extends Phaser.GameObjects.Sprite {
         this.setAnimations();
         this.setScale(3);
 
-        this.requiredItems = null;
-        this.items = null;
-
         this.on('animationcomplete', this.onAnimationComplete);
+
+        this.minimumItemsRequired = 2;
+        this.maximumItemsRequired = 2;
+
+        this.items = [];
+        this.requiredItemsTemplate = [];
+
+        this.resetItemsTemplate();
+    }
+
+    /**
+     * When item is inserted, check to see if there is a demand for such an item.  If there is demand,
+     * 'consume' the item and light up
+     * @param suggestedItem
+     */
+    insert(suggestedItem) {
+
+        let matchingItems = this.requiredItemsTemplate.filter(
+            requiredItem => requiredItem.itemType === suggestedItem.itemType && requiredItem.fulfilled === false
+        );
+
+        if (Array.isArray(matchingItems) && matchingItems.length) {
+            this.anims.play(this.animationKeys.OPEN);
+
+            const fulfilledItem =  matchingItems[0];
+            fulfilledItem.fulfilled = true;
+            fulfilledItem.setAlpha(1.0);
+        }
+    }
+
+    resetItemsTemplate() {
+
+        this.resetItems();
+        this.requiredItemsTemplate = [];
+        const numberOfItemsRequired = Phaser.Math.RND.between(this.minimumItemsRequired, this.maximumItemsRequired);
+
+        let newItem = null;
+
+        for (let i = 0 ; i < numberOfItemsRequired; i++) {
+            newItem = new ItemSprite({
+                scene: this.scene,
+                x: (this.x - 20) + (i * 40), y: this.y - 80,
+                type: ItemSprite.getRandomItemType(),
+            });
+            newItem.setScale(.8);
+            newItem.setAlpha(.7);
+            newItem.fulfilled = false;
+
+            this.requiredItemsTemplate.push(newItem);
+        }
+    }
+
+    resetItems() {
+
+        this.items = [];
     }
 
     setAnimations() {
@@ -30,8 +83,6 @@ class HyperassemblyChamberSprite extends Phaser.GameObjects.Sprite {
 
         // Loop through each animation key and automate the registration of animations.
         Object.keys(this.animationKeys).forEach((animationKeyName) => {
-
-            console.log(animationKeyName);
 
             // Name and path are pretty much never going to change, just the number.
             const path = 'hyperassembly-chamber/';
@@ -90,14 +141,10 @@ class HyperassemblyChamberSprite extends Phaser.GameObjects.Sprite {
         return animationsRegistered;
     }
 
-    insert(item) {
-        this.anims.play(this.animationKeys.OPEN);
-    }
-
-    onAnimationComplete(animation, frames) {
+    onAnimationComplete(animation) {
 
         if (animation.key == this.animationKeys.OPEN) {
             setTimeout(() => this.anims.play(this.animationKeys.CLOSE), 3000);
         }
     }
-}
+};

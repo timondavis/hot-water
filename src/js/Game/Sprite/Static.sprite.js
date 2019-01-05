@@ -16,7 +16,6 @@ class StaticSprite extends Phaser.GameObjects.Sprite {
 
     constructor(config) {
         super(config.scene, config.x, config.y, TextureNames.SPRITE_ATLAS, (config.staticFrame)? config.staticFrame : config.spriteName + '-0.png');
-        console.log(config.spriteName);
         this.scene = config.scene;
         this.scene.add.existing(this);
         this.startFrame = (config.start) ? config.start : 0;
@@ -43,7 +42,6 @@ class StaticSprite extends Phaser.GameObjects.Sprite {
         // Don't re-register if registered.
         if (registeredAnimations.indexOf(this.spriteName) !== -1) { return false; }
 
-        console.log(this.endFrame);
         const frameNames = this.scene.anims.generateFrameNames(TextureNames.SPRITE_ATLAS, {
             start: this.startFrame,
             end: this.endFrame,

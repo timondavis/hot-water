@@ -1,5 +1,6 @@
 let SamSprite = require('../Sprite/Sam.sprite');
 let StaticSprite = require('../Sprite/Static.sprite');
+let ItemSprite = require('../Sprite/Item/Item.sprite');
 let HyperassemblyChamberSprite = require('../Sprite/HyperassemblyChamber.sprite');
 let TextureNamesEnum = require('../Sprite/TextureNames.enum');
 
@@ -24,8 +25,6 @@ class ConveyorScene extends Phaser.Scene {
         this.setupLevel();
 
         this.items = this.add.group();
-        this.items.add(this.add.sprite(810, 420, TextureNamesEnum.SPRITE_ATLAS, 'poly/cube.png'));
-        this.items.setDepth(1000);
 
         this.currentItem = this.add.sprite(400, 520);
         this.currentItem.setDepth(5000);
@@ -33,10 +32,26 @@ class ConveyorScene extends Phaser.Scene {
         this.currentItem.setTexture(TextureNamesEnum.SPRITE_ATLAS);
         this.currentItem.visible = false;
         this.currentItem.setScale(2);
+        this.currentItem.itemType = null;
+
 
         this.createInputs();
 
         this.sam.on('animationcomplete', this.sam.onAnimationComplete);
+
+        this.conveyerRelease = this.time.addEvent({
+            delay: 3000,
+            startAt: 1,
+            loop: true,
+            callback: () => {
+                console.log('looping');
+                this.items.add(new ItemSprite({
+                    scene: this,
+                    x: 810, y: 420,
+                    type: ItemSprite.getRandomItemType(),
+                }));
+            }
+        });
     }
 
     update() {
@@ -53,15 +68,16 @@ class ConveyorScene extends Phaser.Scene {
         this.insertRight = this.input.keyboard.addKey('f');
     }
 
+
     handleInputs() {
 
-        let shape = this.items.getFirst(true);
+        let item = this.items.getFirst(true);
 
-        // Move to shape and pick it up.
-        if (shape && this.grab.isDown && !this.processingAction) { this.handleGrab(); }
+        // Move to item and pick it up.
+        if (item && this.grab.isDown && !this.processingAction) { this.handleGrab(); }
 
         // Put an item in the left hyperchamber (D)
-        if (shape &&
+        if (item &&
             (this.insertLeft.isDown || this.insertRight.isDown ) &&
             !this.processingAction
         ) {
@@ -131,8 +147,8 @@ class ConveyorScene extends Phaser.Scene {
     handleGrab() {
         this.processingAction = true;
 
-        let shape = this.items.getFirst(true);
-        this.currentItem.setFrame(shape.frame.name);
+        let item = this.items.getFirst(true);
+        this.currentItem.setFrame(item.frame.name);
 
         this.sam.anims.play(this.sam.animationKeys.GRAB.DOWN);
 
@@ -140,13 +156,14 @@ class ConveyorScene extends Phaser.Scene {
 
             targets: this.sam,
             duration: 250,
-            x: shape.x - 30,
+            x: item.x - 30,
             onComplete: () => {
                 setTimeout(() => {
                     this.sam.anims.play(this.sam.animationKeys.STAND.DOWN);
-                    //this.items.remove(shape);
                     this.currentItem.visible = true;
-                    shape.visible = false;
+                    this.currentItem.itemType = item.itemType;
+                    item.visible = false;
+                    this.items.remove(item);
                 }, 300);
             }
         });
@@ -171,7 +188,7 @@ class ConveyorScene extends Phaser.Scene {
                targetChamber.insert(this.currentItem);
                this.currentItem.visible = false;
            }
-        })
+        });
     }
 
     createHyperchambers() {
