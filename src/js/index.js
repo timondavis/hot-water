@@ -1,10 +1,9 @@
+import '../style/style.scss';
+
 let Phaser = require('phaser');
 let ConveyorScene = require('./Game/Scene/Conveyor.scene');
 
 let conveyorScene = new ConveyorScene('Conveyor');
-
-console.log(conveyorScene);
-
 
 let game = new Phaser.Game({
    type: Phaser.AUTO,

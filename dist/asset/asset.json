@@ -1,0 +1,650 @@
+{
+	"textures": [
+		{
+			"image": "asset.png",
+			"format": "RGBA8888",
+			"size": {
+				"w": 880,
+				"h": 602
+			},
+			"scale": 1,
+			"frames": [
+				{
+					"filename": "background.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 800,
+						"h": 600
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 800,
+						"h": 600
+					},
+					"frame": {
+						"x": 1,
+						"y": 1,
+						"w": 800,
+						"h": 600
+					}
+				},
+				{
+					"filename": "excellelerator/excellelerator-0.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 1,
+						"w": 48,
+						"h": 47
+					},
+					"frame": {
+						"x": 803,
+						"y": 1,
+						"w": 48,
+						"h": 47
+					}
+				},
+				{
+					"filename": "sam/stand/down-0.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 12,
+						"y": 1,
+						"w": 23,
+						"h": 47
+					},
+					"frame": {
+						"x": 853,
+						"y": 1,
+						"w": 23,
+						"h": 47
+					}
+				},
+				{
+					"filename": "sam/stand/down-1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 12,
+						"y": 1,
+						"w": 23,
+						"h": 47
+					},
+					"frame": {
+						"x": 853,
+						"y": 1,
+						"w": 23,
+						"h": 47
+					}
+				},
+				{
+					"filename": "excellelerator/excellelerator-1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 1,
+						"w": 48,
+						"h": 47
+					},
+					"frame": {
+						"x": 803,
+						"y": 50,
+						"w": 48,
+						"h": 47
+					}
+				},
+				{
+					"filename": "sam/stand/up-0.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 12,
+						"y": 1,
+						"w": 23,
+						"h": 47
+					},
+					"frame": {
+						"x": 853,
+						"y": 50,
+						"w": 23,
+						"h": 47
+					}
+				},
+				{
+					"filename": "sam/stand/up-1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 12,
+						"y": 1,
+						"w": 23,
+						"h": 47
+					},
+					"frame": {
+						"x": 853,
+						"y": 50,
+						"w": 23,
+						"h": 47
+					}
+				},
+				{
+					"filename": "excellelerator/excellelerator-2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 1,
+						"w": 48,
+						"h": 47
+					},
+					"frame": {
+						"x": 803,
+						"y": 99,
+						"w": 48,
+						"h": 47
+					}
+				},
+				{
+					"filename": "sam/grab/down-0.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 13,
+						"y": 1,
+						"w": 22,
+						"h": 47
+					},
+					"frame": {
+						"x": 853,
+						"y": 99,
+						"w": 22,
+						"h": 47
+					}
+				},
+				{
+					"filename": "sam/grab/down-1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 13,
+						"y": 1,
+						"w": 22,
+						"h": 47
+					},
+					"frame": {
+						"x": 853,
+						"y": 99,
+						"w": 22,
+						"h": 47
+					}
+				},
+				{
+					"filename": "conveyer/center-0.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 9,
+						"w": 48,
+						"h": 39
+					},
+					"frame": {
+						"x": 803,
+						"y": 148,
+						"w": 48,
+						"h": 39
+					}
+				},
+				{
+					"filename": "sam/walk/down-0.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 13,
+						"y": 1,
+						"w": 21,
+						"h": 47
+					},
+					"frame": {
+						"x": 853,
+						"y": 148,
+						"w": 21,
+						"h": 47
+					}
+				},
+				{
+					"filename": "conveyer/center-1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 9,
+						"w": 48,
+						"h": 39
+					},
+					"frame": {
+						"x": 803,
+						"y": 189,
+						"w": 48,
+						"h": 39
+					}
+				},
+				{
+					"filename": "sam/walk/down-1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 13,
+						"y": 1,
+						"w": 21,
+						"h": 47
+					},
+					"frame": {
+						"x": 853,
+						"y": 197,
+						"w": 21,
+						"h": 47
+					}
+				},
+				{
+					"filename": "poly/pyramid.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 5,
+						"w": 48,
+						"h": 36
+					},
+					"frame": {
+						"x": 803,
+						"y": 230,
+						"w": 48,
+						"h": 36
+					}
+				},
+				{
+					"filename": "sam/walk/up-0.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 13,
+						"y": 1,
+						"w": 21,
+						"h": 47
+					},
+					"frame": {
+						"x": 853,
+						"y": 246,
+						"w": 21,
+						"h": 47
+					}
+				},
+				{
+					"filename": "polybench/polybench-0.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 1,
+						"y": 0,
+						"w": 47,
+						"h": 48
+					},
+					"frame": {
+						"x": 803,
+						"y": 268,
+						"w": 47,
+						"h": 48
+					}
+				},
+				{
+					"filename": "polybench/polybench-1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 1,
+						"y": 0,
+						"w": 47,
+						"h": 48
+					},
+					"frame": {
+						"x": 803,
+						"y": 268,
+						"w": 47,
+						"h": 48
+					}
+				},
+				{
+					"filename": "sam/walk/up-1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 13,
+						"y": 1,
+						"w": 21,
+						"h": 47
+					},
+					"frame": {
+						"x": 852,
+						"y": 295,
+						"w": 21,
+						"h": 47
+					}
+				},
+				{
+					"filename": "package.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 2,
+						"w": 44,
+						"h": 44
+					},
+					"frame": {
+						"x": 803,
+						"y": 318,
+						"w": 44,
+						"h": 44
+					}
+				},
+				{
+					"filename": "poly/cylinder.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 9,
+						"y": 9,
+						"w": 30,
+						"h": 31
+					},
+					"frame": {
+						"x": 849,
+						"y": 344,
+						"w": 30,
+						"h": 31
+					}
+				},
+				{
+					"filename": "poly/cube.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 6,
+						"w": 44,
+						"h": 34
+					},
+					"frame": {
+						"x": 803,
+						"y": 364,
+						"w": 44,
+						"h": 34
+					}
+				},
+				{
+					"filename": "sam/walk/left-0.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 13,
+						"y": 1,
+						"w": 20,
+						"h": 47
+					},
+					"frame": {
+						"x": 849,
+						"y": 377,
+						"w": 20,
+						"h": 47
+					}
+				},
+				{
+					"filename": "hyperassembly-chamber/hyperassembly-chamber-0.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 2,
+						"w": 38,
+						"h": 44
+					},
+					"frame": {
+						"x": 803,
+						"y": 400,
+						"w": 38,
+						"h": 44
+					}
+				},
+				{
+					"filename": "poly/ball.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 7,
+						"w": 33,
+						"h": 33
+					},
+					"frame": {
+						"x": 843,
+						"y": 426,
+						"w": 33,
+						"h": 33
+					}
+				},
+				{
+					"filename": "hyperassembly-chamber/hyperassembly-chamber-1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 2,
+						"w": 38,
+						"h": 44
+					},
+					"frame": {
+						"x": 803,
+						"y": 446,
+						"w": 38,
+						"h": 44
+					}
+				},
+				{
+					"filename": "sam/walk/left-1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 13,
+						"y": 1,
+						"w": 19,
+						"h": 47
+					},
+					"frame": {
+						"x": 843,
+						"y": 461,
+						"w": 19,
+						"h": 47
+					}
+				},
+				{
+					"filename": "hyperassembly-chamber/hyperassembly-chamber-2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 2,
+						"w": 38,
+						"h": 44
+					},
+					"frame": {
+						"x": 803,
+						"y": 492,
+						"w": 38,
+						"h": 44
+					}
+				},
+				{
+					"filename": "conveyer/outside-0.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 11,
+						"y": 9,
+						"w": 37,
+						"h": 39
+					},
+					"frame": {
+						"x": 803,
+						"y": 538,
+						"w": 37,
+						"h": 39
+					}
+				},
+				{
+					"filename": "conveyer/outside-1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 11,
+						"y": 9,
+						"w": 37,
+						"h": 39
+					},
+					"frame": {
+						"x": 842,
+						"y": 538,
+						"w": 37,
+						"h": 39
+					}
+				}
+			]
+		}
+	],
+	"meta": {
+		"app": "https://www.codeandweb.com/texturepacker",
+		"version": "3.0",
+		"smartupdate": "$TexturePacker:SmartUpdate:2f1b2057bdf290b598b733fc351424ae:0da1cdcb91f8cdc60b14629ae8d06b87:3c3f8eb9b5c2a5ede0dc2dd13739817f$"
+	}
+}
