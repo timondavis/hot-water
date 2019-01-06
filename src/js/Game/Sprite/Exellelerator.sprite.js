@@ -76,8 +76,6 @@ class ExelleleratorSprite extends Phaser.GameObjects.Sprite {
                 frameNames = reversed;
             }
 
-            console.log(frameNames)
-
             // Create new animation using those frame names.
             this.scene.anims.create({
                 key: this.animationKeys[animationKeyName],

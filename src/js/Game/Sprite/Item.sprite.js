@@ -28,13 +28,19 @@ class Item extends Phaser.GameObjects.Sprite {
         this.visible = true;
     }
 
-    static getRandomItemType() {
-        const keys = Object.keys(itemTypes);
-        const targetKey = Phaser.Math.RND.pick(keys);
+    static getRandomItemType(typesAllowed) {
+
+        if (!Array.isArray(typesAllowed) || !typesAllowed.length) {
+            const keys = Object.keys(itemTypes);
+            const targetKey = Phaser.Math.RND.pick(keys);
+            return itemTypes[targetKey];
+        }
+
+        const targetKey = Phaser.Math.RND.pick(typesAllowed);
         return itemTypes[targetKey];
     }
 
-    get typeKeys() {
+    static get typeKeys() {
         return itemTypes;
     }
 

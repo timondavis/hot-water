@@ -17,19 +17,12 @@ class HyperassemblyChamberSprite extends Phaser.GameObjects.Sprite {
         this.on('animationcomplete', this.onAnimationComplete);
 
         this.minimumItemsRequired = 2;
-        this.maximumItemsRequired = 2;
+        this.maximumItemsRequired = 4;
 
         this.requiredItems = [];
-        this.requiredItemsBg = this.scene.add.graphics();
-        let requiredItemsBgMargin = 10;
-        this.requiredItemsBg.fillStyle(0xFFFFFF, .5);
-        this.requiredItemsBg.fillRect(
-            this.x - 35 - requiredItemsBgMargin,
-            this.y - 90 - requiredItemsBgMargin,
-            90, 40
-        );
-
+        this.requiredItemsBg = null;
         this.resetItemsTemplate();
+
     }
 
     /**
@@ -51,6 +44,8 @@ class HyperassemblyChamberSprite extends Phaser.GameObjects.Sprite {
             const fulfilledItem =  matchingItems[0];
             fulfilledItem.fulfilled = true;
             fulfilledItem.setAlpha(1.0);
+
+            this.scene.itemCount[suggestedItem.itemType] --;
         }
     }
 
@@ -94,16 +89,21 @@ class HyperassemblyChamberSprite extends Phaser.GameObjects.Sprite {
      */
     resetItemsTemplate() {
 
-        this.resetItems();
+        if (this.requiredItems) {
+            this.requiredItems.forEach(sprite => sprite.destroy())
+        }
+
+
         this.requiredItems = [];
         const numberOfItemsRequired = Phaser.Math.RND.between(this.minimumItemsRequired, this.maximumItemsRequired);
 
         let newItem = null;
+        let xOffset = ((20 * numberOfItemsRequired) / 2) + (5 * (numberOfItemsRequired - 1)) ;
 
         for (let i = 0 ; i < numberOfItemsRequired; i++) {
             newItem = new ItemSprite({
                 scene: this.scene,
-                x: (this.x - 20) + (i * 40), y: this.y - 80,
+                x: (this.x - xOffset) + (i * 40), y: this.y - 80,
                 type: ItemSprite.getRandomItemType(),
             });
             newItem.setScale(.8);
@@ -112,6 +112,19 @@ class HyperassemblyChamberSprite extends Phaser.GameObjects.Sprite {
 
             this.requiredItems.push(newItem);
         }
+
+        if (this.requiredItemsBg) {
+            this.requiredItemsBg.destroy();
+        }
+
+        this.requiredItemsBg = this.scene.add.graphics();
+        let requiredItemsBgMargin = 10;
+        this.requiredItemsBg.fillStyle(0xFFFFFF, .5);
+        this.requiredItemsBg.fillRect(
+            this.x - ((this.requiredItems.length * 45) / 2),
+            this.y - 90 - requiredItemsBgMargin,
+            45 * this.requiredItems.length, 40
+        );
     }
 
     /**

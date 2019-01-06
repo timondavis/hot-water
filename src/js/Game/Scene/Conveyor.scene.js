@@ -11,6 +11,9 @@ class ConveyorScene extends Phaser.Scene {
     init() {
         this.scale = 3;
         this.processingAction = false;
+        this.itemCount = {};
+
+        Object.keys(ItemSprite.typeKeys).forEach(key => this.itemCount[ItemSprite.typeKeys[key]] = 0 );
     }
 
     preload() {
@@ -61,6 +64,13 @@ class ConveyorScene extends Phaser.Scene {
     }
 
     update() {
+
+        let frontItem = this.items.getFirst(true);
+
+        if (frontItem && frontItem.x <= 50) {
+            this.gameOver();
+        }
+
         Phaser.Actions.Call(this.items.getChildren(), (item) => {
             item.x -= 0.5;
         });
@@ -113,18 +123,31 @@ class ConveyorScene extends Phaser.Scene {
         });
 
         this.conveyerRelease = this.time.addEvent({
-            delay: 1000,
+            delay: 3000,
             startAt: 1,
             loop: true,
             callback: () => {
-                console.log('looping');
-                this.items.add(new ItemSprite({
-                    scene: this,
-                    x: 810, y: 420,
-                    type: ItemSprite.getRandomItemType(),
-                }));
+                let item = this.getNewRandomItem() ;
+                this.items.add(item);
             }
+        })
+    }
+
+    getNewRandomItem() {
+
+        const typesAllowed = [];
+
+        Object.keys(ItemSprite.typeKeys).forEach(type => {
+            if (this.itemCount[ItemSprite.typeKeys[type]] < 2) { typesAllowed.push(type); }
         });
+
+        const type = ItemSprite.getRandomItemType(typesAllowed);
+        this.itemCount[type] += 1;
+        return new ItemSprite({
+            scene: this,
+            x: 810, y: 420,
+            type: type,
+        })
     }
 
     handleInputs() {
@@ -175,10 +198,12 @@ class ConveyorScene extends Phaser.Scene {
 
     handleSlotAction(invokedSlot) {
 
+        if (this.slotTween) { return; }
+
         this.slotTween = this.tweens.add({
             targets: this.sam,
             duration: 400,
-            x: this.polybench.x - 200, y: this.polybench.y,
+            x: this.polybench.x - 75, y: this.polybench.y,
             onComplete: () => {
                 this.handleSlotting(invokedSlot);
             }
@@ -187,7 +212,7 @@ class ConveyorScene extends Phaser.Scene {
 
     handleGrab() {
 
-        //if (this.currentItem) { return; }
+        if (this.currentItem) { return; }
 
         this.processingAction = true;
 
@@ -247,7 +272,7 @@ class ConveyorScene extends Phaser.Scene {
             onComplete: () => {
                 this.displayItem.visible = true;
                 this.displayItem.setFrame('package.png');
-                targetChamber.resetItems();
+                targetChamber.resetItemsTemplate();
                 this.currentItem = true;
                 this.getPackageTween = null;
                 this.processingAction = false;
@@ -296,6 +321,7 @@ class ConveyorScene extends Phaser.Scene {
         let position = invokedSlot.value;
 
         if (!this.itemSlots[position].contents && !this.currentItem) {
+            this.slotTween = false;
             this.processingAction = false;
             return;
         }
@@ -309,6 +335,7 @@ class ConveyorScene extends Phaser.Scene {
             this.itemSlots[position].contents = null;
             this.itemSlots[position].visible = false;
             this.processingAction = false;
+            this.slotTween = false;
             return;
         }
 
@@ -321,6 +348,7 @@ class ConveyorScene extends Phaser.Scene {
             this.currentItem = null;
             this.displayItem.visible = false;
             this.processingAction = false;
+            this.slotTween = false;
             return;
         }
 
@@ -335,6 +363,7 @@ class ConveyorScene extends Phaser.Scene {
             this.itemSlots[position].setFrame(temp.frame.name);
             this.itemSlots[position].visible = true;
             this.processingAction = false;
+            this.slotTween = false;
             return;
         }
     }
@@ -350,6 +379,24 @@ class ConveyorScene extends Phaser.Scene {
             x: 560,
             y: 260,
             scene: this
+        });
+    }
+
+    gameOver() {
+
+        let item = this.items.getFirst(true);
+        this.items.remove(item);
+
+        this.tweens.add({
+            targets: item,
+            x: 0, y: this.sys.game.config.height,
+            duration: 700,
+            ease: 'Quad.easeIn',
+            onComplete: () => {
+                setTimeout(() => {
+                    this.scene.restart();
+                }, 1000);
+            }
         });
     }
 };
