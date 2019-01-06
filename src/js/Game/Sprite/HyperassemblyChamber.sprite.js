@@ -121,6 +121,7 @@ class HyperassemblyChamberSprite extends Phaser.GameObjects.Sprite {
 
         this.requiredItems.forEach((item) => {
             item.fulfilled = false;
+            item.setAlpha(.5);
         })
     }
 

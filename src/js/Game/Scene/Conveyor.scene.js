@@ -22,35 +22,24 @@ class ConveyorScene extends Phaser.Scene {
         this.sam.setScale(this.scale);
         this.sam.setDepth(50);
 
+        this.conveyer = null; // Group
+        this.conveyerRelease = null; // Timer
         this.setupLevel();
+        this.createConveyer();
 
         this.items = this.add.group();
 
-        this.currentItem = this.add.sprite(400, 520);
-        this.currentItem.setDepth(5000);
-        this.currentItem.setAlpha(0.7);
-        this.currentItem.setTexture(TextureNamesEnum.SPRITE_ATLAS);
-        this.currentItem.visible = false;
-        this.currentItem.setScale(2);
-        this.currentItem.itemType = null;
+        this.currentItem = null;
+        this.displayItem = this.add.sprite(400, 520);
+        this.displayItem.setDepth(5000);
+        this.displayItem.setAlpha(0.7);
+        this.displayItem.setTexture(TextureNamesEnum.SPRITE_ATLAS);
+        this.displayItem.visible = false;
+        this.displayItem.setScale(2);
 
         this.createInputs();
 
         this.sam.on('animationcomplete', this.sam.onAnimationComplete);
-
-        this.conveyerRelease = this.time.addEvent({
-            delay: 3000,
-            startAt: 1,
-            loop: true,
-            callback: () => {
-                console.log('looping');
-                this.items.add(new ItemSprite({
-                    scene: this,
-                    x: 810, y: 420,
-                    type: ItemSprite.getRandomItemType(),
-                }));
-            }
-        });
     }
 
     update() {
@@ -67,28 +56,7 @@ class ConveyorScene extends Phaser.Scene {
         this.insertRight = this.input.keyboard.addKey('f');
     }
 
-    handleInputs() {
-
-        let item = this.items.getFirst(true);
-
-        // Move to item and pick it up.
-        if (item && this.grab.isDown && !this.processingAction) { this.handleGrab(); }
-
-        // Put an item in the left hyperchamber (D)
-        if (item &&
-            (this.insertLeft.isDown || this.insertRight.isDown ) &&
-            !this.processingAction
-        ) {
-            this.handleHyperchamberInteraction();
-        }
-
-    }
-
-    setupLevel() {
-
-        this.background = this.add.sprite(0, 0, TextureNamesEnum.SPRITE_ATLAS, 'background.png');
-        this.background.setOrigin(0);
-        this.background.setDepth(0);
+    createConveyer() {
 
         this.conveyer = this.add.group();
 
@@ -103,12 +71,8 @@ class ConveyorScene extends Phaser.Scene {
                 spriteName = StaticSprite.SpriteNames.CONVEYOR_OUTSIDE;
             }
 
-            spriteConfig = {
-                scene: this,
-                x: this.sys.game.config.width - ((48 * this.scale) * i), y: this.sam.y + (20 * this.scale),
-                spriteName: spriteName,
-                scale: this.scale
-            };
+            spriteConfig = { scene: this, x: this.sys.game.config.width - ((48 * this.scale) * i), y: this.sam.y + (20 * this.scale),
+                spriteName: spriteName, scale: this.scale };
 
             tempSprite = new StaticSprite(spriteConfig);
 
@@ -119,35 +83,65 @@ class ConveyorScene extends Phaser.Scene {
             conveyerSprite.setDepth(100);
         });
 
-        this.excellelerator = new StaticSprite({
-            scene: this,
-            x: 150, y: 250,
-            spriteName: StaticSprite.SpriteNames.EXCELLELERATOR,
-            scale: this.scale,
-            end: 2,
-            yoyo: true,
-            autoPlay: false
+        this.conveyerRelease = this.time.addEvent({
+            delay: 1000,
+            startAt: 1,
+            loop: true,
+            callback: () => {
+                console.log('looping');
+                this.items.add(new ItemSprite({
+                    scene: this,
+                    x: 810, y: 420,
+                    type: ItemSprite.getRandomItemType(),
+                }));
+            }
         });
+    }
+
+    handleInputs() {
+
+        if (this.processingAction) { return; }
+
+        let frontItem = this.items.getFirst(true);
+
+        // Move to item and pick it up.
+        if (frontItem && this.grab.isDown) {
+            this.processingAction = true;
+            this.handleGrab();
+        }
+
+        // Put an item in the left hyperchamber (D)
+        if ((this.insertLeft.isDown || this.insertRight.isDown )) {
+            this.handleHyperchamberInteraction();
+        }
+
+    }
+
+    setupLevel() {
+
+        this.background = this.add.sprite(0, 0, TextureNamesEnum.SPRITE_ATLAS, 'background.png');
+        this.background.setOrigin(0);
+        this.background.setDepth(0);
+
+        this.excellelerator = new StaticSprite({ scene: this, x: 150, y: 250, spriteName: StaticSprite.SpriteNames.EXCELLELERATOR,
+            scale: this.scale, end: 2, yoyo: true, autoPlay: false });
 
         this.createHyperchambers();
 
-        this.polybench = new StaticSprite({
-            scene: this,
-            x: 700, y: 370,
-            spriteName: StaticSprite.SpriteNames.POLYBENCH,
-            scale: this.scale,
-            end: 0,
-            autoPlay: false
-        });
+        this.polybench = new StaticSprite({ scene: this, x: 700, y: 370, spriteName: StaticSprite.SpriteNames.POLYBENCH,
+            scale: this.scale, end: 0, autoPlay: false });
 
     }
 
     handleGrab() {
+
+        //if (this.currentItem) { return; }
+
         this.processingAction = true;
 
         let item = this.items.getFirst(true);
-        this.currentItem.setFrame(item.frame.name);
-        this.currentItem.itemType = item.itemType;
+        this.currentItem = item;
+        this.displayItem.setFrame(this.currentItem.frame.name);
 
         this.sam.anims.play(this.sam.animationKeys.GRAB.DOWN);
 
@@ -158,9 +152,9 @@ class ConveyorScene extends Phaser.Scene {
             x: item.x - 30, y: this.sam.homeRow,
             onComplete: () => {
                 setTimeout(() => {
+                    this.processingAction = false;
                     this.sam.anims.play(this.sam.animationKeys.STAND.DOWN);
-                    this.currentItem.visible = true;
-                    this.currentItem.itemType = item.itemType;
+                    this.displayItem.visible = true;
                     item.visible = false;
                     this.items.remove(item);
                 }, 300);
@@ -178,20 +172,36 @@ class ConveyorScene extends Phaser.Scene {
             targetChamber = this.hyperChamberTwo;
         }
 
-        if (targetChamber.isProductComplete() && !this.currentItem.visible) {
+        if (targetChamber.isProductComplete() && !this.currentItem) {
+            this.processingAction = true;
             this.sam.anims.play(this.sam.animationKeys.WALK.UP);
             this.handleGetPackage(targetChamber);
         }
         else if (targetChamber.mayItemBeInserted(this.currentItem)) {
+            this.processingAction = true;
+            this.sam.anims.play(this.sam.animationKeys.WALK.UP);
             this.handleInsert(targetChamber, this.currentItem);
         }
     }
 
     handleGetPackage(targetChamber) {
 
-        this.currentItem.setFrame('')
-    }
+        if (this.getPackageTween) { return; }
 
+        this.getPackageTween = this.tweens.add({
+            targets: this.sam,
+            duration: 400,
+            x: targetChamber.x, y: targetChamber.y,
+            onComplete: () => {
+                this.displayItem.visible = true;
+                this.displayItem.setFrame('package.png');
+                targetChamber.resetItems();
+                this.currentItem = true;
+                this.getPackageTween = null;
+                this.processingAction = false;
+            }
+        });
+    }
 
     handleInsert(targetChamber, candidateItem) {
 
@@ -203,8 +213,10 @@ class ConveyorScene extends Phaser.Scene {
            x: targetChamber.x, y: targetChamber.y,
            onComplete: () => {
                targetChamber.insert(candidateItem);
-               this.currentItem.visible = false;
+               this.displayItem.visible = false;
+               this.currentItem = null;
                this.insertTween = null;
+               this.processingAction = false;
            }
         });
     }

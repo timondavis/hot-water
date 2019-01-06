@@ -5,7 +5,7 @@ const itemTypes = {
     BALL: 'ball',
     BOX: 'cube',
     CYLINDER: 'cylinder',
-    PYRAMID: 'pyramid'
+    PYRAMID: 'pyramid',
 };
 
 module.exports =
