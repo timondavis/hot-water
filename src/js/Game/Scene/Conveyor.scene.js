@@ -38,6 +38,23 @@ class ConveyorScene extends Phaser.Scene {
         this.displayItem.visible = false;
         this.displayItem.setScale(2);
 
+        this.itemSlots = [];
+        this.itemSlots[0] = this.add.sprite(670, 350, TextureNamesEnum.SPRITE_ATLAS, 'poly/ball.png');
+        this.itemSlots[0].setScale(0.45);
+        this.itemSlots[0].contents = null;
+        this.itemSlots[0].visible = false;
+
+
+        this.itemSlots[1] = this.add.sprite(695, 365, TextureNamesEnum.SPRITE_ATLAS, 'poly/cube.png');
+        this.itemSlots[1].setScale(0.45);
+        this.itemSlots[1].contents = null;
+        this.itemSlots[1].visible = false;
+
+        this.itemSlots[2] = this.add.sprite(727, 383, TextureNamesEnum.SPRITE_ATLAS, 'poly/pyramid.png');
+        this.itemSlots[2].setScale(0.45);
+        this.itemSlots[2].contents = null;
+        this.itemSlots[2].visible = false;
+
         this.createInputs();
 
         this.sam.on('animationcomplete', this.sam.onAnimationComplete);
@@ -56,6 +73,16 @@ class ConveyorScene extends Phaser.Scene {
         this.insertLeft = this.input.keyboard.addKey('d');
         this.insertRight = this.input.keyboard.addKey('f');
         this.send = this.input.keyboard.addKey('s');
+
+        this.itemSlotKeys = [];
+        this.itemSlotKeys[0] = this.input.keyboard.addKey('i');
+        this.itemSlotKeys[0].value = 0;
+
+        this.itemSlotKeys[1] = this.input.keyboard.addKey('o');
+        this.itemSlotKeys[1].value = 1;
+
+        this.itemSlotKeys[2] = this.input.keyboard.addKey('p');
+        this.itemSlotKeys[2].value = 2;
     }
 
     createConveyer() {
@@ -122,6 +149,13 @@ class ConveyorScene extends Phaser.Scene {
             this.handleSend(this.currentItem)
         }
 
+        const invokedSlots = this.itemSlotKeys.filter(key => key.isDown);
+
+        if (Array.isArray(invokedSlots) && invokedSlots.length) {
+            this.processingAction = true;
+            this.handleSlotAction(invokedSlots[0]);
+        }
+
     }
 
     setupLevel() {
@@ -137,6 +171,18 @@ class ConveyorScene extends Phaser.Scene {
         this.polybench = new StaticSprite({ scene: this, x: 700, y: 370, spriteName: StaticSprite.SpriteNames.POLYBENCH,
             scale: this.scale, end: 0, autoPlay: false });
 
+    }
+
+    handleSlotAction(invokedSlot) {
+
+        this.slotTween = this.tweens.add({
+            targets: this.sam,
+            duration: 400,
+            x: this.polybench.x - 200, y: this.polybench.y,
+            onComplete: () => {
+                this.handleSlotting(invokedSlot);
+            }
+        });
     }
 
     handleGrab() {
@@ -243,6 +289,54 @@ class ConveyorScene extends Phaser.Scene {
                this.processingAction = false;
            }
        });
+    }
+
+    handleSlotting(invokedSlot) {
+
+        let position = invokedSlot.value;
+
+        if (!this.itemSlots[position].contents && !this.currentItem) {
+            this.processingAction = false;
+            return;
+        }
+
+        if (this.itemSlots[position].contents && !this.currentItem){
+
+            this.currentItem = this.itemSlots[position].contents;
+            this.displayItem.setFrame(this.currentItem.frame.name);
+            this.displayItem.visible = true;
+
+            this.itemSlots[position].contents = null;
+            this.itemSlots[position].visible = false;
+            this.processingAction = false;
+            return;
+        }
+
+        if (!this.itemSlots[position].contents && this.currentItem) {
+
+            this.itemSlots[position].contents = this.currentItem;
+            this.itemSlots[position].setFrame(this.currentItem.frame.name)
+            this.itemSlots[position].visible = true;
+
+            this.currentItem = null;
+            this.displayItem.visible = false;
+            this.processingAction = false;
+            return;
+        }
+
+        if (this.itemSlots[position].contents && this.currentItem) {
+
+            let temp = this.currentItem;
+            this.currentItem = this.itemSlots[position].contents;
+            this.displayItem.setFrame(this.currentItem.frame.name);
+            this.displayItem.visible = true;
+
+            this.itemSlots[position].contents = temp;
+            this.itemSlots[position].setFrame(temp.frame.name);
+            this.itemSlots[position].visible = true;
+            this.processingAction = false;
+            return;
+        }
     }
 
     createHyperchambers() {
