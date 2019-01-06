@@ -1,6 +1,7 @@
 let SamSprite = require('../Sprite/Sam.sprite');
 let StaticSprite = require('../Sprite/Static.sprite');
 let ItemSprite = require('../Sprite/Item.sprite');
+let ExelleratorSprite = require('../Sprite/Exellelerator.sprite');
 let HyperassemblyChamberSprite = require('../Sprite/HyperassemblyChamber.sprite');
 let TextureNamesEnum = require('../Sprite/TextureNames.enum');
 
@@ -18,7 +19,7 @@ class ConveyorScene extends Phaser.Scene {
 
     create() {
 
-        this.sam = new SamSprite({scene: this, x: 400, y: 400});
+        this.sam = new SamSprite({scene: this, x: 400, y: 400})
         this.sam.setScale(this.scale);
         this.sam.setDepth(50);
 
@@ -54,6 +55,7 @@ class ConveyorScene extends Phaser.Scene {
         this.grab = this.input.keyboard.addKey('space');
         this.insertLeft = this.input.keyboard.addKey('d');
         this.insertRight = this.input.keyboard.addKey('f');
+        this.send = this.input.keyboard.addKey('s');
     }
 
     createConveyer() {
@@ -115,6 +117,11 @@ class ConveyorScene extends Phaser.Scene {
             this.handleHyperchamberInteraction();
         }
 
+        if (this.send.isDown && this.currentItem === true) {
+            this.processingAction = true;
+            this.handleSend(this.currentItem)
+        }
+
     }
 
     setupLevel() {
@@ -123,8 +130,7 @@ class ConveyorScene extends Phaser.Scene {
         this.background.setOrigin(0);
         this.background.setDepth(0);
 
-        this.excellelerator = new StaticSprite({ scene: this, x: 150, y: 250, spriteName: StaticSprite.SpriteNames.EXCELLELERATOR,
-            scale: this.scale, end: 2, yoyo: true, autoPlay: false });
+        this.excellelerator = new ExelleratorSprite({scene: this, x:150, y: 250 });
 
         this.createHyperchambers();
 
@@ -219,6 +225,24 @@ class ConveyorScene extends Phaser.Scene {
                this.processingAction = false;
            }
         });
+    }
+
+    handleSend() {
+
+       if (this.sendTween) { return; }
+
+       this.sendTween = this.tweens.add({
+           targets: this.sam,
+           duration: 400,
+           x: this.excellelerator.x, y: this.excellelerator.y,
+           onComplete: () => {
+               this.excellelerator.anims.play(this.excellelerator.animationKeys.OPEN);
+               this.sendTween = null;
+               this.currentItem = false;
+               this.displayItem.visible = false;
+               this.processingAction = false;
+           }
+       });
     }
 
     createHyperchambers() {
