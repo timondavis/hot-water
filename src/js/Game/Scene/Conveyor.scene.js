@@ -123,7 +123,7 @@ class ConveyorScene extends Phaser.Scene {
         });
 
         this.conveyerRelease = this.time.addEvent({
-            delay: 500,
+            delay: 2500,
             startAt: 1,
             loop: true,
             callback: () => {
@@ -158,7 +158,6 @@ class ConveyorScene extends Phaser.Scene {
 
         // Move to item and pick it up.
         if (frontItem && this.grab.isDown) {
-            this.processingAction = true;
             this.handleGrab();
         }
 
@@ -215,9 +214,10 @@ class ConveyorScene extends Phaser.Scene {
         // When current item === true, it means a package is being carried.
         if (this.currentItem === true) { return; }
         if (this.grabTween) { return; }
-        let swap = !!this.currentItem;
 
         this.processingAction = true;
+
+        let swap = !!this.currentItem;
 
         let item = this.items.getFirst(true);
 
