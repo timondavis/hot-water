@@ -123,7 +123,7 @@ class ConveyorScene extends Phaser.Scene {
         });
 
         this.conveyerRelease = this.time.addEvent({
-            delay: 3000,
+            delay: 500,
             startAt: 1,
             loop: true,
             callback: () => {
@@ -212,13 +212,14 @@ class ConveyorScene extends Phaser.Scene {
 
     handleGrab() {
 
-        if (this.currentItem) { return; }
+        // When current item === true, it means a package is being carried.
+        if (this.currentItem === true) { return; }
+        if (this.grabTween) { return; }
+        let swap = !!this.currentItem;
 
         this.processingAction = true;
 
         let item = this.items.getFirst(true);
-        this.currentItem = item;
-        this.displayItem.setFrame(this.currentItem.frame.name);
 
         this.sam.anims.play(this.sam.animationKeys.GRAB.DOWN);
 
@@ -229,11 +230,32 @@ class ConveyorScene extends Phaser.Scene {
             x: item.x - 30, y: this.sam.homeRow,
             onComplete: () => {
                 setTimeout(() => {
+
+                    let tempFrame = false;
+                    let tempType = false;
+
+                    if (swap) {
+                        tempType = this.currentItem.itemType;
+                        tempFrame = this.currentItem.frame.name;
+                    }
+
                     this.processingAction = false;
                     this.sam.anims.play(this.sam.animationKeys.STAND.DOWN);
+                    this.displayItem.setFrame(item.frame.name);
                     this.displayItem.visible = true;
-                    item.visible = false;
-                    this.items.remove(item);
+
+                    if (swap) {
+                        this.currentItem.setFrame(item.frame.name);
+                        this.currentItem.itemType = item.itemType;
+                        item.setFrame(tempFrame);
+                        item.itemType = tempType;
+                    } else {
+                        this.currentItem = item;
+                        item.visible = false;
+                        this.items.remove(item);
+                    }
+
+                    this.grabTween = null;
                 }, 300);
             }
         });

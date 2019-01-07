@@ -4,7 +4,6 @@ let TextureNameEnums = require('./TextureNames.enum');
 const itemTypes = {
     BALL: 'ball',
     BOX: 'cube',
-    CYLINDER: 'cylinder',
     PYRAMID: 'pyramid',
 };
 
