@@ -18,7 +18,6 @@ class ConveyorScene extends Phaser.Scene {
     }
 
     preload() {
-        this.load.multiatlas(TextureNamesEnum.SPRITE_ATLAS, 'asset/asset.json', 'asset/');
     }
 
     create() {
@@ -49,6 +48,7 @@ class ConveyorScene extends Phaser.Scene {
 
     update() {
 
+
         let frontItem = this.items.getFirst(true);
 
         if (frontItem && frontItem.x <= 50) {
@@ -59,6 +59,7 @@ class ConveyorScene extends Phaser.Scene {
             item.x -= 0.5;
         });
         this.handleInputs();
+
     }
 
     createInputs() {
@@ -312,7 +313,7 @@ class ConveyorScene extends Phaser.Scene {
            duration: 400,
            x: this.excellelerator.x, y: this.excellelerator.y,
            onComplete: () => {
-               this.excellelerator.anims.play(this.excellelerator.animationKeys.OPEN);
+               this.excellelerator.anims.play(ExelleratorSprite.animationKeys.OPEN);
                this.sendTween = null;
                this.currentItem = false;
                this.displayItem.visible = false;

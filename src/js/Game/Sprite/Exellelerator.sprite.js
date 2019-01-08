@@ -3,6 +3,11 @@ let TextureNamesEnum = require('./TextureNames.enum');
 
 let animationsRegistered = false;
 
+const animationKeyMap = {
+    OPEN: 'excellelerator-open',
+    CLOSE: 'excellelerator-close'
+};
+
 module.exports =
 class ExelleleratorSprite extends Phaser.GameObjects.Sprite {
 
@@ -11,10 +16,11 @@ class ExelleleratorSprite extends Phaser.GameObjects.Sprite {
         this.scene = config.scene;
         this.scene.add.existing(this);
         this.setScale(3);
-        this.setAnimations();
 
         this.on('animationcomplete', this.onAnimationComplete);
     }
+
+    static get animationKeys() { return animationKeyMap; }
 
     onAnimationComplete(animation) {
 
@@ -23,17 +29,12 @@ class ExelleleratorSprite extends Phaser.GameObjects.Sprite {
         }
     }
 
-    setAnimations() {
-
-        this.animationKeys = {
-            OPEN: 'excellelerator-open',
-            CLOSE: 'excellelerator-close'
-        };
+    static setAnimations(scene) {
 
         if (animationsRegistered) { return; }
 
         // Loop through each animation key and automate the registration of animations.
-        Object.keys(this.animationKeys).forEach((animationKeyName) => {
+        Object.keys(ExelleleratorSprite.animationKeys).forEach((animationKeyName) => {
 
             // Name and path are pretty much never going to change, just the number.
             const path = 'excellelerator/';
@@ -48,9 +49,9 @@ class ExelleleratorSprite extends Phaser.GameObjects.Sprite {
             let reverseOrder = false;
 
             // Configure the animation based on the animation key invoked.
-            switch(this.animationKeys[animationKeyName]) {
+            switch(ExelleleratorSprite.animationKeys[animationKeyName]) {
 
-                case (this.animationKeys.CLOSE): {
+                case (ExelleleratorSprite.animationKeys.CLOSE): {
                     reverseOrder = true;
                     break;
                 }
@@ -60,7 +61,7 @@ class ExelleleratorSprite extends Phaser.GameObjects.Sprite {
             }
 
             // Generate frame names.
-            let frameNames = this.scene.anims.generateFrameNames(TextureNamesEnum.SPRITE_ATLAS, {
+            let frameNames = scene.anims.generateFrameNames(TextureNamesEnum.SPRITE_ATLAS, {
                 start: start,
                 end: end,
                 zeroPad: zeroPad,
@@ -77,7 +78,7 @@ class ExelleleratorSprite extends Phaser.GameObjects.Sprite {
             }
 
             // Create new animation using those frame names.
-            this.scene.anims.create({
+            scene.anims.create({
                 key: this.animationKeys[animationKeyName],
                 frames: frameNames,
                 frameRate: 2,
