@@ -4,6 +4,11 @@ let TextureNamesEnum = require('./TextureNames.enum');
 
 let animationsRegistered = false;
 
+const animationKeyNames = {
+    OPEN: 'hyperassemblyChamber-open',
+    CLOSE: 'hyperassemblyChamber-close',
+};
+
 module.exports =
 class HyperassemblyChamberSprite extends Phaser.GameObjects.Sprite {
 
@@ -11,10 +16,7 @@ class HyperassemblyChamberSprite extends Phaser.GameObjects.Sprite {
         super(config.scene, config.x, config.y, TextureNamesEnum.SPRITE_ATLAS, 'hyperassembly-chamber/hyperassembly-chamber-0.png');
         this.scene = config.scene;
         this.scene.add.existing(this);
-        this.setAnimations();
         this.setScale(3);
-
-        this.on('animationcomplete', this.onAnimationComplete);
 
         this.minimumItemsRequired = 2;
         this.maximumItemsRequired = 4;
@@ -23,6 +25,7 @@ class HyperassemblyChamberSprite extends Phaser.GameObjects.Sprite {
         this.requiredItemsBg = null;
         this.resetItemsTemplate();
 
+        this.on('animationcomplete', this.onAnimationComplete);
     }
 
     /**
@@ -39,7 +42,7 @@ class HyperassemblyChamberSprite extends Phaser.GameObjects.Sprite {
         );
 
         if (Array.isArray(matchingItems) && matchingItems.length) {
-            this.anims.play(this.animationKeys.OPEN);
+            this.anims.play(HyperassemblyChamberSprite.animationKeys.OPEN);
 
             const fulfilledItem =  matchingItems[0];
             fulfilledItem.fulfilled = true;
@@ -47,6 +50,10 @@ class HyperassemblyChamberSprite extends Phaser.GameObjects.Sprite {
 
             this.scene.itemCount[suggestedItem.itemType] --;
         }
+    }
+
+    static get animationKeys() {
+        return animationKeyNames;
     }
 
     /**
@@ -138,17 +145,12 @@ class HyperassemblyChamberSprite extends Phaser.GameObjects.Sprite {
         })
     }
 
-    setAnimations() {
+    static setAnimations(scene) {
 
-        this.animationKeys = {
-           OPEN: 'hyperassemblyChamber-open',
-           CLOSE: 'hyperassemblyChamber-close',
-        };
-
-        if (this.isAnimationsRegistered()) { return; }
+        if (animationsRegistered) { return; }
 
         // Loop through each animation key and automate the registration of animations.
-        Object.keys(this.animationKeys).forEach((animationKeyName) => {
+        Object.keys(HyperassemblyChamberSprite.animationKeys).forEach((animationKeyName) => {
 
             // Name and path are pretty much never going to change, just the number.
             const path = 'hyperassembly-chamber/';
@@ -163,9 +165,9 @@ class HyperassemblyChamberSprite extends Phaser.GameObjects.Sprite {
             let reverseOrder = false;
 
             // Configure the animation based on the animation key invoked.
-            switch(this.animationKeys[animationKeyName]) {
+            switch(HyperassemblyChamberSprite.animationKeys[animationKeyName]) {
 
-                case (this.animationKeys.CLOSE): {
+                case (HyperassemblyChamberSprite.animationKeys.CLOSE): {
                     reverseOrder = true;
                     break;
                 }
@@ -175,7 +177,7 @@ class HyperassemblyChamberSprite extends Phaser.GameObjects.Sprite {
             }
 
             // Generate frame names.
-            let frameNames = this.scene.anims.generateFrameNames(TextureNamesEnum.SPRITE_ATLAS, {
+            let frameNames = scene.anims.generateFrameNames(TextureNamesEnum.SPRITE_ATLAS, {
                 start: start,
                 end: end,
                 zeroPad: zeroPad,
@@ -192,8 +194,8 @@ class HyperassemblyChamberSprite extends Phaser.GameObjects.Sprite {
             }
 
             // Create new animation using those frame names.
-            this.scene.anims.create({
-                key: this.animationKeys[animationKeyName],
+            scene.anims.create({
+                key: HyperassemblyChamberSprite.animationKeys[animationKeyName],
                 frames: frameNames,
                 frameRate: 2,
                 repeat: 0
@@ -203,14 +205,10 @@ class HyperassemblyChamberSprite extends Phaser.GameObjects.Sprite {
         animationsRegistered = true;
     }
 
-    isAnimationsRegistered() {
-        return animationsRegistered;
-    }
-
     onAnimationComplete(animation) {
 
-        if (animation.key == this.animationKeys.OPEN) {
-            setTimeout(() => this.anims.play(this.animationKeys.CLOSE), 3000);
+        if (animation.key == HyperassemblyChamberSprite.animationKeys.OPEN) {
+            setTimeout(() => this.anims.play(HyperassemblyChamberSprite.animationKeys.CLOSE), 3000);
         }
     }
 };

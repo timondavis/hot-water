@@ -1,5 +1,7 @@
 const TextureNamesEnum = require('../Sprite/TextureNames.enum');
+const SamSprite = require('../Sprite/Sam.sprite');
 const ExelleleratorSprite = require('../Sprite/Exellelerator.sprite');
+const HyperassemblyChamberSprite = require('../Sprite/HyperassemblyChamber.sprite');
 
 module.exports =
 class LoadingScene extends Phaser.Scene {
@@ -14,7 +16,9 @@ class LoadingScene extends Phaser.Scene {
 
     create() {
 
+        SamSprite.setAnimations(this);
         ExelleleratorSprite.setAnimations(this);
+        HyperassemblyChamberSprite.setAnimations(this);
         this.scene.start('Conveyor');
     }
 

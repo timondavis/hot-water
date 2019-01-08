@@ -1,6 +1,21 @@
 let Phaser = require('phaser');
 let TextureNamesEnum = require('./TextureNames.enum.js');
 
+const animationKeyNames = {
+    WALK: {
+        UP: "sam/walk/up",
+        DOWN: "sam/walk/down",
+    },
+    GRAB: {
+        UP: "sam/grab/up",
+        DOWN: "sam/grab/down",
+    },
+    STAND: {
+        UP: "sam/stand/up",
+        DOWN: "sam/stand/down",
+    },
+};
+
 module.exports =
 class SamSprite extends Phaser.GameObjects.Sprite {
 
@@ -8,34 +23,12 @@ class SamSprite extends Phaser.GameObjects.Sprite {
         super(config.scene, config.x, config.y, TextureNamesEnum.SPRITE_ATLAS, 'sam/stand/down-0.png');
         this.scene = config.scene;
         this.scene.add.existing(this);
-        this.setAnimations();
 
         this.homeRow = config.x;
     }
 
-    setAnimations() {
-
-        let path = "sam/";
-        this.animationKeys = {
-            WALK: {
-                UP: path + "walk/up",
-                DOWN: path + "walk/down",
-                LEFT: path + "walk/left",
-                RIGHT: path + "walk/left"
-            },
-            GRAB: {
-                UP: path + "grab/up",
-                DOWN: path + "grab/down",
-            },
-            STAND: {
-                UP: path + "stand/up",
-                DOWN: path + "stand/down",
-                LEFT: path + "walk/left",
-                RIGHT: path + "walk/right"
-            },
-        };
-
-        this.assignAnimations();
+    static get animationKeys() {
+        return animationKeyNames;
     }
 
     stand() {
@@ -52,14 +45,14 @@ class SamSprite extends Phaser.GameObjects.Sprite {
     /**
      * Create animation frame names and the animations to consume them.
      */
-    assignAnimations() {
+    static setAnimations(scene) {
 
         // For each animationKey defined, loop through and:
         // 1.  Define the frame names
         // 2.  Define the animation which puts those frames to use.
-        Object.keys(this.animationKeys).forEach((action) => {
+        Object.keys(SamSprite.animationKeys).forEach((action) => {
 
-            Object.keys(this.animationKeys[action]).forEach((direction) => {
+            Object.keys(SamSprite.animationKeys[action]).forEach((direction) => {
 
                 let startIndex = 0;
                 let endIndex = 0;
@@ -71,10 +64,10 @@ class SamSprite extends Phaser.GameObjects.Sprite {
                 // the need to do so.
                 switch(action) {
 
-                    case this.animationKeys.GRAB: {
+                    case SamSprite.animationKeys.GRAB: {
                         break;
                     }
-                    case this.animationKeys.STAND: {
+                    case SamSprite.animationKeys.STAND: {
                         break;
                     }
                     default:
@@ -84,17 +77,17 @@ class SamSprite extends Phaser.GameObjects.Sprite {
                 }
 
                 // Generate frame names.
-                let frameNames = this.scene.anims.generateFrameNames(TextureNamesEnum.SPRITE_ATLAS, {
+                let frameNames = scene.anims.generateFrameNames(TextureNamesEnum.SPRITE_ATLAS, {
                     start: 1,
                     end: 2,
                     zeroPad: 1,
-                    prefix: this.animationKeys[action][direction] + "-",
+                    prefix: SamSprite.animationKeys[action][direction] + "-",
                     suffix: '.png'
                 });
 
                 // Create new animation using those frame names.
-                this.scene.anims.create({
-                    key: this.animationKeys[action][direction],
+                scene.anims.create({
+                    key: SamSprite.animationKeys[action][direction],
                     frames: frameNames,
                     frameRate: 2,
                     repeat: -1,

@@ -204,7 +204,7 @@ class ConveyorScene extends Phaser.Scene {
 
         let item = this.items.getFirst(true);
 
-        this.sam.anims.play(this.sam.animationKeys.GRAB.DOWN);
+        this.sam.anims.play(SamSprite.animationKeys.GRAB.DOWN);
 
         this.grabTween = this.tweens.add({
 
@@ -223,7 +223,7 @@ class ConveyorScene extends Phaser.Scene {
                     }
 
                     this.processingAction = false;
-                    this.sam.anims.play(this.sam.animationKeys.STAND.DOWN);
+                    this.sam.anims.play(SamSprite.animationKeys.STAND.DOWN);
                     this.displayItem.setFrame(item.frame.name);
                     this.displayItem.visible = true;
 
@@ -257,12 +257,12 @@ class ConveyorScene extends Phaser.Scene {
 
         if (targetChamber.isProductComplete() && !this.currentItem) {
             this.processingAction = true;
-            this.sam.anims.play(this.sam.animationKeys.WALK.UP);
+            this.sam.anims.play(SamSprite.animationKeys.WALK.UP);
             this.handleGetPackage(targetChamber);
         }
         else if (this.currentItem && targetChamber.mayItemBeInserted(this.currentItem)) {
             this.processingAction = true;
-            this.sam.anims.play(this.sam.animationKeys.WALK.UP);
+            this.sam.anims.play(SamSprite.animationKeys.WALK.UP);
             this.handleInsert(targetChamber, this.currentItem);
         }
     }
