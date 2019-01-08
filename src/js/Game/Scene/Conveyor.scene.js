@@ -3,6 +3,7 @@ let StaticSprite = require('../Sprite/Static.sprite');
 let ItemSprite = require('../Sprite/Item.sprite');
 let ExelleratorSprite = require('../Sprite/Exellelerator.sprite');
 let HyperassemblyChamberSprite = require('../Sprite/HyperassemblyChamber.sprite');
+let PolybenchSprite = require('../Sprite/Polybench.sprite');
 let TextureNamesEnum = require('../Sprite/TextureNames.enum');
 
 module.exports =
@@ -40,23 +41,6 @@ class ConveyorScene extends Phaser.Scene {
         this.displayItem.setTexture(TextureNamesEnum.SPRITE_ATLAS);
         this.displayItem.visible = false;
         this.displayItem.setScale(2);
-
-        this.itemSlots = [];
-        this.itemSlots[0] = this.add.sprite(670, 350, TextureNamesEnum.SPRITE_ATLAS, 'poly/ball.png');
-        this.itemSlots[0].setScale(0.45);
-        this.itemSlots[0].contents = null;
-        this.itemSlots[0].visible = false;
-
-
-        this.itemSlots[1] = this.add.sprite(695, 365, TextureNamesEnum.SPRITE_ATLAS, 'poly/cube.png');
-        this.itemSlots[1].setScale(0.45);
-        this.itemSlots[1].contents = null;
-        this.itemSlots[1].visible = false;
-
-        this.itemSlots[2] = this.add.sprite(727, 383, TextureNamesEnum.SPRITE_ATLAS, 'poly/pyramid.png');
-        this.itemSlots[2].setScale(0.45);
-        this.itemSlots[2].contents = null;
-        this.itemSlots[2].visible = false;
 
         this.createInputs();
 
@@ -190,9 +174,7 @@ class ConveyorScene extends Phaser.Scene {
 
         this.createHyperchambers();
 
-        this.polybench = new StaticSprite({ scene: this, x: 700, y: 370, spriteName: StaticSprite.SpriteNames.POLYBENCH,
-            scale: this.scale, end: 0, autoPlay: false });
-
+        this.polybench = new PolybenchSprite({ scene: this, x: 700, y: 370});
     }
 
     handleSlotAction(invokedSlot) {
@@ -204,7 +186,7 @@ class ConveyorScene extends Phaser.Scene {
             duration: 400,
             x: this.polybench.x - 75, y: this.polybench.y,
             onComplete: () => {
-                this.handleSlotting(invokedSlot);
+                this.polybench.swap(invokedSlot);
             }
         });
     }
@@ -265,6 +247,7 @@ class ConveyorScene extends Phaser.Scene {
 
         let targetChamber = null;
 
+
         if (this.insertLeft.isDown) {
             targetChamber = this.hyperChamberOne;
         } else if (this.insertRight.isDown) {
@@ -276,7 +259,7 @@ class ConveyorScene extends Phaser.Scene {
             this.sam.anims.play(this.sam.animationKeys.WALK.UP);
             this.handleGetPackage(targetChamber);
         }
-        else if (targetChamber.mayItemBeInserted(this.currentItem)) {
+        else if (this.currentItem && targetChamber.mayItemBeInserted(this.currentItem)) {
             this.processingAction = true;
             this.sam.anims.play(this.sam.animationKeys.WALK.UP);
             this.handleInsert(targetChamber, this.currentItem);
@@ -336,58 +319,6 @@ class ConveyorScene extends Phaser.Scene {
                this.processingAction = false;
            }
        });
-    }
-
-    handleSlotting(invokedSlot) {
-
-        let position = invokedSlot.value;
-
-        if (!this.itemSlots[position].contents && !this.currentItem) {
-            this.slotTween = false;
-            this.processingAction = false;
-            return;
-        }
-
-        if (this.itemSlots[position].contents && !this.currentItem){
-
-            this.currentItem = this.itemSlots[position].contents;
-            this.displayItem.setFrame(this.currentItem.frame.name);
-            this.displayItem.visible = true;
-
-            this.itemSlots[position].contents = null;
-            this.itemSlots[position].visible = false;
-            this.processingAction = false;
-            this.slotTween = false;
-            return;
-        }
-
-        if (!this.itemSlots[position].contents && this.currentItem) {
-
-            this.itemSlots[position].contents = this.currentItem;
-            this.itemSlots[position].setFrame(this.currentItem.frame.name)
-            this.itemSlots[position].visible = true;
-
-            this.currentItem = null;
-            this.displayItem.visible = false;
-            this.processingAction = false;
-            this.slotTween = false;
-            return;
-        }
-
-        if (this.itemSlots[position].contents && this.currentItem) {
-
-            let temp = this.currentItem;
-            this.currentItem = this.itemSlots[position].contents;
-            this.displayItem.setFrame(this.currentItem.frame.name);
-            this.displayItem.visible = true;
-
-            this.itemSlots[position].contents = temp;
-            this.itemSlots[position].setFrame(temp.frame.name);
-            this.itemSlots[position].visible = true;
-            this.processingAction = false;
-            this.slotTween = false;
-            return;
-        }
     }
 
     createHyperchambers() {
