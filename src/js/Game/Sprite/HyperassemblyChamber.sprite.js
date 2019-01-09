@@ -208,7 +208,10 @@ class HyperassemblyChamberSprite extends Phaser.GameObjects.Sprite {
     onAnimationComplete(animation) {
 
         if (animation.key == HyperassemblyChamberSprite.animationKeys.OPEN) {
-            setTimeout(() => this.anims.play(HyperassemblyChamberSprite.animationKeys.CLOSE), 3000);
+            setTimeout(() => {
+                if (this.scene.isGameOver) { return; }
+                this.anims.play(HyperassemblyChamberSprite.animationKeys.CLOSE)
+            }, 3000);
         }
     }
 };

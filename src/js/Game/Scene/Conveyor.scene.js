@@ -13,6 +13,7 @@ class ConveyorScene extends Phaser.Scene {
         this.scale = 3;
         this.processingAction = false;
         this.itemCount = {};
+        this.isGameOver = false;
 
         Object.keys(ItemSprite.typeKeys).forEach(key => this.itemCount[ItemSprite.typeKeys[key]] = 0 );
     }
@@ -108,7 +109,7 @@ class ConveyorScene extends Phaser.Scene {
         });
 
         this.conveyerRelease = this.time.addEvent({
-            delay: 2500,
+            delay: 2000,
             startAt: 1,
             loop: true,
             callback: () => {
@@ -338,6 +339,7 @@ class ConveyorScene extends Phaser.Scene {
 
     gameOver() {
 
+        this.isGameOver = true;
         let item = this.items.getFirst(true);
         this.items.remove(item);
 
@@ -349,8 +351,9 @@ class ConveyorScene extends Phaser.Scene {
             onComplete: () => {
                 setTimeout(() => {
                     this.scene.restart();
-                }, 1000);
+                }, 3000);
             }
         });
     }
+
 };
