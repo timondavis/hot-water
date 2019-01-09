@@ -34,7 +34,7 @@ class PolybenchSprite extends Phaser.GameObjects.Sprite {
 
         if (!this.itemSlots[position].contents && !this.scene.currentItem) {
             this.scene.slotTween = false;
-            this.scene.eprocessingAction = false;
+            this.scene.processingAction = false;
             return;
         }
 

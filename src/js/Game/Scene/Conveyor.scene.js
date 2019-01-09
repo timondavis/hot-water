@@ -12,8 +12,11 @@ class ConveyorScene extends Phaser.Scene {
     init() {
         this.scale = 3;
         this.processingAction = false;
+        this.resetTween = null;
         this.itemCount = {};
         this.isGameOver = false;
+        this.shippedCount = 0;
+        this.conveyerSpeed = 0.7;
 
         Object.keys(ItemSprite.typeKeys).forEach(key => this.itemCount[ItemSprite.typeKeys[key]] = 0 );
     }
@@ -45,6 +48,12 @@ class ConveyorScene extends Phaser.Scene {
         this.createInputs();
 
         this.sam.on('animationcomplete', this.sam.onAnimationComplete);
+
+        this.shippingCounter = this.add.text(160, 207, this.shippedCount, {
+            font: '22px Arial',
+            fill: '#dcc21b'
+        });
+        this.shippingCounter.setOrigin(0.5);
     }
 
     update() {
@@ -57,9 +66,11 @@ class ConveyorScene extends Phaser.Scene {
         }
 
         Phaser.Actions.Call(this.items.getChildren(), (item) => {
-            item.x -= 0.5;
+            item.x -= this.conveyerSpeed;
         });
         this.handleInputs();
+
+        this.shippingCounter.setText(this.shippedCount);
 
     }
 
@@ -159,7 +170,9 @@ class ConveyorScene extends Phaser.Scene {
 
         const invokedSlots = this.itemSlotKeys.filter(key => key.isDown);
 
-        if (Array.isArray(invokedSlots) && invokedSlots.length) {
+        // Handle the slot request if there are slots available.  Note: if currentItem === true, it's a package.
+        // That can't be slotted, so ignore those requests.
+        if (Array.isArray(invokedSlots) && invokedSlots.length && this.currentItem !== true) {
             this.processingAction = true;
             this.handleSlotAction(invokedSlots[0]);
         }
@@ -307,6 +320,7 @@ class ConveyorScene extends Phaser.Scene {
 
     handleSend() {
 
+       if (this.isGameOver) { return; }
        if (this.sendTween) { return; }
 
        this.sendTween = this.tweens.add({
@@ -339,7 +353,6 @@ class ConveyorScene extends Phaser.Scene {
 
     gameOver() {
 
-        this.isGameOver = true;
         let item = this.items.getFirst(true);
         this.items.remove(item);
 
@@ -349,9 +362,23 @@ class ConveyorScene extends Phaser.Scene {
             duration: 700,
             ease: 'Quad.easeIn',
             onComplete: () => {
-                setTimeout(() => {
-                    this.scene.restart();
-                }, 3000);
+
+                if (this.resetTween) {return;}
+
+                this.resetTween = setTimeout(() => {
+                    this.tweens.add({
+                        targets: this.shippingCounter,
+                        x: 400, y:100,
+                        scaleY: 3,
+                        scaleX: 3,
+                        duration: 2000,
+                        onComplete: () => {
+                            setTimeout(() => {
+                                this.scene.restart();
+                            }, 2000);
+                        }
+                    });
+                }, 200);
             }
         });
     }

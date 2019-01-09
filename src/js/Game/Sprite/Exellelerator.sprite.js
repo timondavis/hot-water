@@ -25,7 +25,8 @@ class ExelleleratorSprite extends Phaser.GameObjects.Sprite {
     onAnimationComplete(animation) {
 
         if (animation.key == ExelleleratorSprite.animationKeys.OPEN) {
-            setTimeout(() => this.anims.play(ExelleleratorSprite.animationKeys.CLOSE), 3000);
+            setTimeout(() => this.anims.play(ExelleleratorSprite.animationKeys.CLOSE), 1500);
+            this.scene.shippedCount += 1;
         }
     }
 
