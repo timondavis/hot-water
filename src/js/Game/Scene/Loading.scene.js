@@ -19,10 +19,7 @@ class LoadingScene extends Phaser.Scene {
         SamSprite.setAnimations(this);
         ExelleleratorSprite.setAnimations(this);
         HyperassemblyChamberSprite.setAnimations(this);
-        this.scene.start('Conveyor');
+        this.scene.start('Menu');
     }
 
-    update() {
-
-    }
 };

@@ -374,7 +374,7 @@ class ConveyorScene extends Phaser.Scene {
                         duration: 2000,
                         onComplete: () => {
                             setTimeout(() => {
-                                this.scene.restart();
+                                this.scene.start('Menu');
                             }, 2000);
                         }
                     });
@@ -382,5 +382,4 @@ class ConveyorScene extends Phaser.Scene {
             }
         });
     }
-
 };
